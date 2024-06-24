@@ -1,9 +1,11 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FarmForm extends StatefulWidget {
+  const FarmForm({Key? key}) : super(key: key);
+
   @override
-  _FarmFormState createState() => _FarmFormState();
+  createState() => _FarmFormState();
 }
 
 class _FarmFormState extends State<FarmForm> {
@@ -13,8 +15,10 @@ class _FarmFormState extends State<FarmForm> {
   final _nameController = TextEditingController();
   final _locationController = TextEditingController();
   final _sizeController = TextEditingController();
-  final _typeCultivoController = TextEditingController();
+  final _typeCropController = TextEditingController();
   final _descriptionController = TextEditingController();
+
+  FirebaseFirestore db = FirebaseFirestore.instance;
 
   @override
   void dispose() {
@@ -22,16 +26,38 @@ class _FarmFormState extends State<FarmForm> {
     _nameController.dispose();
     _locationController.dispose();
     _sizeController.dispose();
-    _typeCultivoController.dispose();
+    _typeCropController.dispose();
     _descriptionController.dispose();
     super.dispose();
+  }
+
+  Future<void> addFarm({
+    required String name,
+    required String location,
+    required String size,
+    required String typeCrop,
+    required String description,
+  }) async {
+    try {
+      await db.collection("farms").add({
+        'name': name,
+        'location': location,
+        'size': size,
+        'typeCrop': typeCrop,
+        'description': description,
+      });
+      print('Finca registrada con éxito en Firestore');
+    } catch (e) {
+      print('Error al registrar la finca: $e');
+      // Aquí puedes manejar cualquier error que ocurra al enviar los datos a Firestore
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Registro de Finca'),
+        title: const Text('Registro de Finca'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -41,7 +67,10 @@ class _FarmFormState extends State<FarmForm> {
             children: <Widget>[
               TextFormField(
                 controller: _nameController,
-                decoration: InputDecoration(labelText: 'Nombre de la Finca'),
+                decoration: InputDecoration(
+                  labelText: 'Nombre de la Finca',
+                  border: OutlineInputBorder(),
+                ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Por favor, ingresa el nombre de la finca';
@@ -49,9 +78,13 @@ class _FarmFormState extends State<FarmForm> {
                   return null;
                 },
               ),
+              SizedBox(height: 16.0),
               TextFormField(
                 controller: _locationController,
-                decoration: InputDecoration(labelText: 'Ubicación'),
+                decoration: InputDecoration(
+                  labelText: 'Ubicación',
+                  border: OutlineInputBorder(),
+                ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Por favor, ingresa la ubicación';
@@ -59,9 +92,13 @@ class _FarmFormState extends State<FarmForm> {
                   return null;
                 },
               ),
+              SizedBox(height: 16.0),
               TextFormField(
                 controller: _sizeController,
-                decoration: InputDecoration(labelText: 'Tamaño (hectáreas)'),
+                decoration: InputDecoration(
+                  labelText: 'Tamaño (hectáreas)',
+                  border: OutlineInputBorder(),
+                ),
                 keyboardType: TextInputType.number,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -70,9 +107,13 @@ class _FarmFormState extends State<FarmForm> {
                   return null;
                 },
               ),
+              SizedBox(height: 16.0),
               TextFormField(
-                controller: _typeCultivoController,
-                decoration: InputDecoration(labelText: 'Tipo de Cultivo'),
+                controller: _typeCropController,
+                decoration: InputDecoration(
+                  labelText: 'Tipo de Cultivo',
+                  border: OutlineInputBorder(),
+                ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Por favor, ingresa el tipo de cultivo';
@@ -80,9 +121,13 @@ class _FarmFormState extends State<FarmForm> {
                   return null;
                 },
               ),
+              SizedBox(height: 16.0),
               TextFormField(
                 controller: _descriptionController,
-                decoration: InputDecoration(labelText: 'Descripción'),
+                decoration: InputDecoration(
+                  labelText: 'Descripción',
+                  border: OutlineInputBorder(),
+                ),
                 maxLines: 3,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -91,18 +136,40 @@ class _FarmFormState extends State<FarmForm> {
                   return null;
                 },
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 24.0),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   if (_formKey.currentState?.validate() == true) {
-                    // Aquí puedes manejar el envío de los datos
-                    // por ejemplo, enviar los datos a un servidor o guardarlos localmente
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Finca registrada con éxito')),
+                    // Captura los datos del formulario
+                    String name = _nameController.text.trim();
+                    String location = _locationController.text.trim();
+                    String size = _sizeController.text.trim();
+                    String typeCrop = _typeCropController.text.trim();
+                    String description = _descriptionController.text.trim();
+
+                    // Llama a la función para añadir la finca a Firestore
+                    await addFarm(
+                      name: name,
+                      location: location,
+                      size: size,
+                      typeCrop: typeCrop,
+                      description: description,
                     );
+
+                    // Muestra un mensaje al usuario
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Finca registrada con éxito')),
+                    );
+
+                    // Limpia los campos del formulario después de registrar
+                    _nameController.clear();
+                    _locationController.clear();
+                    _sizeController.clear();
+                    _typeCropController.clear();
+                    _descriptionController.clear();
                   }
                 },
-                child: Text('Registrar Finca'),
+                child: const Text('Registrar Finca'),
               ),
             ],
           ),
