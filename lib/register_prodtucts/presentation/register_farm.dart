@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FarmForm extends StatefulWidget {
-  const FarmForm({Key? key}) : super(key: key);
+  const FarmForm({super.key});
 
   @override
   createState() => _FarmFormState();
@@ -11,7 +11,6 @@ class FarmForm extends StatefulWidget {
 class _FarmFormState extends State<FarmForm> {
   final _formKey = GlobalKey<FormState>();
 
-  // Controladores para los campos de texto
   final _nameController = TextEditingController();
   final _locationController = TextEditingController();
   final _sizeController = TextEditingController();
@@ -22,7 +21,6 @@ class _FarmFormState extends State<FarmForm> {
 
   @override
   void dispose() {
-    // Limpia los controladores cuando el Widget se deshaga
     _nameController.dispose();
     _locationController.dispose();
     _sizeController.dispose();
@@ -67,7 +65,7 @@ class _FarmFormState extends State<FarmForm> {
             children: <Widget>[
               TextFormField(
                 controller: _nameController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Nombre de la Finca',
                   border: OutlineInputBorder(),
                 ),
@@ -78,10 +76,10 @@ class _FarmFormState extends State<FarmForm> {
                   return null;
                 },
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               TextFormField(
                 controller: _locationController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Ubicación',
                   border: OutlineInputBorder(),
                 ),
@@ -92,10 +90,10 @@ class _FarmFormState extends State<FarmForm> {
                   return null;
                 },
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               TextFormField(
                 controller: _sizeController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Tamaño (hectáreas)',
                   border: OutlineInputBorder(),
                 ),
@@ -107,10 +105,10 @@ class _FarmFormState extends State<FarmForm> {
                   return null;
                 },
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               TextFormField(
                 controller: _typeCropController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Tipo de Cultivo',
                   border: OutlineInputBorder(),
                 ),
@@ -121,10 +119,10 @@ class _FarmFormState extends State<FarmForm> {
                   return null;
                 },
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               TextFormField(
                 controller: _descriptionController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Descripción',
                   border: OutlineInputBorder(),
                 ),
@@ -136,7 +134,7 @@ class _FarmFormState extends State<FarmForm> {
                   return null;
                 },
               ),
-              SizedBox(height: 24.0),
+              const SizedBox(height: 24.0),
               ElevatedButton(
                 onPressed: () async {
                   if (_formKey.currentState?.validate() == true) {

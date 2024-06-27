@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({Key? key}) : super(key: key);
+  const SignUpScreen({super.key});
 
   @override
-  _SignUpScreenState createState() => _SignUpScreenState();
+  createState() => _SignUpScreenState();
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
@@ -13,7 +13,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   void _register() async {
     try {
@@ -25,7 +25,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
         password: password,
       );
 
-      // Si el registro es exitoso, puedes navegar a otra pantalla o mostrar un mensaje de éxito
       print('Usuario registrado: ${userCredential.user!.uid}');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Registro exitoso')),
@@ -37,7 +36,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
     } catch (e) {
       print('Error al registrar usuario: $e');
-      // Maneja el error, muestra un mensaje al usuario, etc.
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error al registrar usuario: $e')),
       );
@@ -48,7 +46,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Registro'),
+        title: const Text('Registro'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -57,15 +55,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              SizedBox(height: 48.0),
-              Text(
+              const SizedBox(height: 48.0),
+              const Text(
                 'Crear una cuenta',
                 style: TextStyle(
                   fontSize: 24.0,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 24.0),
+              const SizedBox(height: 24.0),
               TextFormField(
                 controller: _emailController,
                 decoration: InputDecoration(
@@ -83,7 +81,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   return null;
                 },
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               TextFormField(
                 controller: _passwordController,
                 decoration: InputDecoration(
@@ -102,14 +100,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   return null;
                 },
               ),
-              SizedBox(height: 24.0),
+              const SizedBox(height: 24.0),
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     _register();
                   }
                 },
-                child: Padding(
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                ),
+                child: const Padding(
                   padding: EdgeInsets.symmetric(vertical: 16.0),
                   child: Text(
                     'Registrar',
@@ -117,11 +120,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       fontSize: 16.0,
                       fontWeight: FontWeight.bold,
                     ),
-                  ),
-                ),
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.0),
                   ),
                 ),
               ),
