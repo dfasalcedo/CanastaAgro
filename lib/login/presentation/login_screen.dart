@@ -23,6 +23,8 @@ class LoginPage extends HookWidget {
           email: emailController.text,
           password: passwordController.text,
         );
+        emailController.clear();
+        passwordController.clear();
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => const NavigationScreen()),
