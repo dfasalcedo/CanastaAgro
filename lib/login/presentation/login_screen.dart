@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-
+import 'package:firebase_auth/firebase_auth.dart';
 import '../../navigation_drawer/presentation/navigation_screen.dart';
 import 'sing_up_screen.dart';
 
@@ -12,6 +12,38 @@ class LoginPage extends HookWidget {
     final emailController = useTextEditingController();
     final passwordController = useTextEditingController();
     final formKey = useMemoized(() => GlobalKey<FormState>());
+    final auth = FirebaseAuth.instance;
+
+    Future<void> login() async {
+      if (formKey.currentState?.validate() != true) {
+        return;
+      }
+      try {
+        await auth.signInWithEmailAndPassword(
+          email: emailController.text,
+          password: passwordController.text,
+        );
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const NavigationScreen()),
+        );
+      } catch (e) {
+        String errorMessage;
+        switch (e.hashCode) {
+          case 'user-not-found':
+            errorMessage = 'Usuario no encontrado';
+            break;
+          case 'wrong-password':
+            errorMessage = 'Contraseña incorrecta';
+            break;
+          default:
+            errorMessage = 'Ocurrió un error. Inténtalo de nuevo';
+        }
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(errorMessage)),
+        );
+      }
+    }
 
     return Scaffold(
       backgroundColor: Colors.blue.shade50,
@@ -77,14 +109,7 @@ class LoginPage extends HookWidget {
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                   ),
-                  onPressed: () {
-                    if (formKey.currentState?.validate() == true) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const NavigationScreen()),
-                      );
-                    }
-                  },
+                  onPressed: login,
                   child: const Text(
                     'Login',
                     style: TextStyle(fontSize: 16),
