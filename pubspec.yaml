@@ -66,7 +66,6 @@ flutter:
   assets:
     - assets/list_farms.jpeg
     - assets/register_farm.jpeg
-    - assets/register.png
     - assets/add_recipe.png
 
 
